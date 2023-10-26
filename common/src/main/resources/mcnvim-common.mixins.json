@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "town.marsh.mcnvim.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "MixinEditBox",
+    "MixinScreen"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

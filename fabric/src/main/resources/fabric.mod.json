@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Neovim",
+  "description": "Embed neovim in minecraft.",
+  "authors": [
+    "marshmallow"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "Insert License Here",
+  "icon": "assets/mcnvim/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "town.marsh.mcnvim.fabric.NeovimFabric"
+      }
+    ]
+  },
+  "mixins": [
+    "mcnvim.mixins.json",
+    "mcnvim-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "architectury": ">=${architectury_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}"
+  }
+}

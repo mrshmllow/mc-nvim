@@ -1,0 +1,52 @@
+{
+  "_comment": "https://github.com/QuiltMC/rfcs/blob/main/specification/0002-quilt.mod.json.md",
+  "schema_version": 1,
+  "mixin": [
+    "mcnvim.mixins.json",
+    "mcnvim-common.mixins.json"
+  ],
+  "quilt_loader": {
+    "metadata": {
+      "name": "Neovim",
+      "description": "Embed neovim in minecraft.",
+      "license": "CC0-1.0",
+      "authors": ["marshmallow"],
+      "contact": {
+        "sources": "https://github.com/architectury/architectury-templates"
+      }
+    },
+    "group": "${group}",
+    "id": "${mod_id}",
+    "version": "${version}",
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": [
+        {
+          "adapter": "kotlin",
+          "value": "town.marsh.mcnvim.quilt.NeovimQuilt"
+        }
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "version": "*"
+      },
+      {
+        "id": "quilt_base",
+        "version": "*"
+      },
+      {
+        "id": "minecraft",
+        "version": ">=${minecraft_version}"
+      },
+      {
+        "id": "architectury",
+        "version": ">=${architectury_version}"
+      }
+    ]
+  },
+  "minecraft": {
+    "environment": "*"
+  }
+}

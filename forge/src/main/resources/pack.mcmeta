@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "description": "Embed neovim in minecraft.",
+    "pack_format": 9
+  }
+}
