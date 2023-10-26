@@ -3,14 +3,15 @@ package town.marsh.mcnvim.neovim
 import org.msgpack.value.ArrayValue
 import town.marsh.mcnvim.Neovim
 import java.net.Socket
+import java.util.concurrent.CompletableFuture
 
 class Client(socket: Socket): Session(socket) {
-    fun feedKeys(keys: String, mode: String, escape_ks: Boolean) {
+    fun feedKeys(keys: String, mode: String, escapeKs: Boolean) {
         createCall("nvim_feedkeys") {
             packer.packArrayHeader(3)
             packer.packString(keys)
             packer.packString(mode)
-            packer.packBoolean(escape_ks)
+            packer.packBoolean(escapeKs)
         }
     }
 
@@ -32,8 +33,8 @@ class Client(socket: Socket): Session(socket) {
         input(str)
     }
 
-    fun getCurrentLine(): String? {
-        return createCall("nvim_get_current_line").asStringValue().asString()
+    fun getCurrentLine(): CompletableFuture<String> {
+        return createCall("nvim_get_current_line").thenApply { result -> result.asStringValue().asString() };
     }
 
     fun setCurrentLine(string: String) {
@@ -43,11 +44,11 @@ class Client(socket: Socket): Session(socket) {
         }
     }
 
-    fun winGetCursor(window: Int): ArrayValue? {
+    fun winGetCursor(window: Int = 0): CompletableFuture<ArrayValue> {
         return createCall("nvim_win_get_cursor") {
             packer.packArrayHeader(1)
             packer.packInt(window)
-        }.asArrayValue()
+        }.thenApply { result -> result.asArrayValue() }
     }
 
     fun winSetCursor(window: Int, column: Int) {
@@ -61,22 +62,22 @@ class Client(socket: Socket): Session(socket) {
         }
     }
 
-    fun bufGetMark(buf: Int, mark: String): ArrayValue? {
-        val result = createCall("nvim_buf_get_mark") {
+    fun bufGetMark(buf: Int, mark: String): CompletableFuture<ArrayValue> {
+        return createCall("nvim_buf_get_mark") {
             packer.packArrayHeader(2)
             packer.packInt(buf)
             packer.packString(mark)
-        }
+        }.thenApply { result ->
+            if (result.isNilValue) return@thenApply null;
 
-        if (result.isNilValue) {
-            return null
+            result.asArrayValue()
         }
-
-        return result.asArrayValue()
     }
 
-    fun getMode(): String {
-        // this is jank. mode is the first key/value, so skip the key and get the mode value
-        return createCall("nvim_get_mode").asMapValue().keyValueArray[1].asStringValue().toString()
+    fun getMode(): CompletableFuture<String> {
+        return createCall("nvim_get_mode").thenApply { result ->
+            // this is jank. mode is the first key/value, so skip the key and get the mode value
+            result.asMapValue().keyValueArray[1].asStringValue().toString()
+        }
     }
 }

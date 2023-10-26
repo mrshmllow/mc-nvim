@@ -26,7 +26,7 @@ public abstract class MixinEditBox extends AbstractWidget {
 
     @Redirect(method = "*", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/gui/components/EditBox;value:Ljava/lang/String;"))
     private String getValue(EditBox instance) {
-        return Neovim.INSTANCE.getClient().getCurrentLine();
+        return Neovim.INSTANCE.getClient().getCurrentLine().join();
     }
 
     @Redirect(method = "*", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/components/EditBox;value:Ljava/lang/String;"))
@@ -36,7 +36,7 @@ public abstract class MixinEditBox extends AbstractWidget {
 
     @Redirect(method = "*", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/gui/components/EditBox;cursorPos:I"))
     private int getCursorPosition(EditBox instance) {
-        return Neovim.INSTANCE.getClient().winGetCursor(0).get(1).asIntegerValue().asInt();
+        return Neovim.INSTANCE.getClient().winGetCursor(0).join().get(1).asIntegerValue().asInt();
     }
 
     @Redirect(method = "*", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/components/EditBox;cursorPos:I"))
@@ -46,7 +46,7 @@ public abstract class MixinEditBox extends AbstractWidget {
 
     @Redirect(method = "*", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/gui/components/EditBox;highlightPos:I"))
     private int getHighlightPos(EditBox instance) {
-        ArrayValue result = Neovim.INSTANCE.getClient().bufGetMark(0, "'>");
+        ArrayValue result = Neovim.INSTANCE.getClient().bufGetMark(0, "'>").join();
 
         if (result == null) {
             return this.getCursorPosition(instance);
@@ -57,7 +57,12 @@ public abstract class MixinEditBox extends AbstractWidget {
 
     @Inject(at = @At("HEAD"), method = "charTyped", locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
     private void keyPressed(char c, int i, CallbackInfoReturnable<Boolean> cir) {
-        if (Screen.hasShiftDown()) {
+        if (c == '/') {
+            // ignore / for chat
+            if (Neovim.INSTANCE.getClient().getMode().join().equals("i")) {
+                return;
+            }
+        } else if (Screen.hasShiftDown()) {
             Neovim.INSTANCE.getClient().input("<S-" + c);
         } else if (Screen.hasControlDown()) {
             Neovim.INSTANCE.getClient().input("<C-" + c);

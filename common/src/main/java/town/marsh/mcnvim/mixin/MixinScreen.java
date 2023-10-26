@@ -12,7 +12,7 @@ import town.marsh.mcnvim.Neovim;
 public abstract class MixinScreen implements ContainerEventHandler {
     @Inject(at = @At("HEAD"), method = "shouldCloseOnEsc", cancellable = true)
     private void shouldCloseOnEscape(CallbackInfoReturnable<Boolean> cir) {
-        String mode = Neovim.INSTANCE.getClient().getMode();
+        String mode = Neovim.INSTANCE.getClient().getMode().join();
 
         Neovim.INSTANCE.getLOGGER().info(mode);
 

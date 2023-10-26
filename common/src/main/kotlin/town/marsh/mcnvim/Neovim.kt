@@ -13,4 +13,9 @@ object Neovim {
     val client = Client(socket)
 
     fun init() {}
+
+    fun close() {
+        client.close()
+        socket.close()
+    }
 }
