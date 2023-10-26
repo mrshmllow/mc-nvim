@@ -6,15 +6,15 @@ import org.msgpack.core.MessageUnpacker
 import org.msgpack.value.ArrayValue
 import org.msgpack.value.Value
 import town.marsh.mcnvim.Neovim
-import java.net.Socket
+import town.marsh.mcnvim.neovim.connection.Connection
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 
-open class Session(socket: Socket) {
-    val packer: MessagePacker = MessagePack.newDefaultPacker(socket.getOutputStream())
-    private val unpacker: MessageUnpacker = MessagePack.newDefaultUnpacker(socket.getInputStream())
+open class Session(connection: Connection) {
+    val packer: MessagePacker = MessagePack.newDefaultPacker(connection.getOutputStream())
+    private val unpacker: MessageUnpacker = MessagePack.newDefaultUnpacker(connection.getInputStream())
     private val msgId = AtomicInteger(0)
 
     private val concurrentHashMap = ConcurrentHashMap<Int, CompletableFuture<Value>>()

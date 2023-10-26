@@ -2,10 +2,10 @@ package town.marsh.mcnvim.neovim
 
 import org.msgpack.value.ArrayValue
 import town.marsh.mcnvim.Neovim
-import java.net.Socket
+import town.marsh.mcnvim.neovim.connection.Connection
 import java.util.concurrent.CompletableFuture
 
-class Client(socket: Socket): Session(socket) {
+class Client(connection: Connection): Session(connection) {
     fun feedKeys(keys: String, mode: String, escapeKs: Boolean) {
         createCall("nvim_feedkeys") {
             packer.packArrayHeader(3)

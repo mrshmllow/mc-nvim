@@ -3,19 +3,22 @@ package town.marsh.mcnvim
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import town.marsh.mcnvim.neovim.Client
-import java.net.Socket
+import town.marsh.mcnvim.neovim.connection.ProcessConnection
+import town.marsh.mcnvim.neovim.connection.SocketConnection
 
 object Neovim {
     const val MOD_ID = "mcnvim"
     val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID);
 
-    private val socket = Socket("127.0.0.1", 1234)
-    val client = Client(socket)
+//    private val connection = SocketConnection("127.0.0.1", 1234)
+    private val connection = ProcessConnection("nvim", "--embed", "--headless")
+    val client = Client(connection)
 
-    fun init() {}
+    fun init() {
+    }
 
     fun close() {
         client.close()
-        socket.close()
+        connection.close()
     }
 }
